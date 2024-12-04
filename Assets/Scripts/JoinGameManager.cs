@@ -38,6 +38,7 @@ public class JoinGameManager : MonoBehaviour
     void JoinGame()
     {
         string text = ipInput.text;
+        if (text == "") text = "127.0.0.1:7777";
         var parts = text.Split(":");
         string ip = parts[0];
         ushort port = ushort.Parse(parts[1]);
