@@ -16,6 +16,7 @@ namespace Client.Stats
         }, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public delegate void HealthChanged(float oldValue, float newValue);
+
         public delegate void ResourceChanged(float oldValue, float newValue);
 
         public HealthChanged OnHealthChanged;
@@ -37,6 +38,22 @@ namespace Client.Stats
 
         private void OnModifierSetChanged(ModifierSet previousV, ModifierSet newV)
         {
+            var previousActualHp = GetAggregatedValue(Stat.Hp, previousV);
+            var currentActualHp = GetAggregatedValue(Stat.Hp, newV);
+            Debug.Log("previousActualHp: " + previousActualHp);
+            Debug.Log("currentActualHp: " + currentActualHp);
+            if (!Mathf.Approximately(previousActualHp, currentActualHp))
+            {
+                OnHealthChanged?.Invoke(previousActualHp, currentActualHp);
+            }
+
+            var previousActualResource = GetAggregatedValue(Stat.Resource, previousV);
+            var currentActualResource = GetAggregatedValue(Stat.Resource, newV);
+            if (!Mathf.Approximately(previousActualResource, currentActualResource))
+            {
+                OnResourceChanged?.Invoke(previousActualResource, currentActualResource);
+            }
+
             if (IsOwner)
             {
                 UpdateHealth(previousV, newV);
@@ -50,7 +67,8 @@ namespace Client.Stats
             {
                 RemoveModifier(stat + "-base");
                 AddModifier(
-                    new StatModifier(OwnerClientId, ModifierType.BaseAdditive, stat.GetDefault(), stat + "-base", stat));
+                    new StatModifier(OwnerClientId, ModifierType.BaseAdditive, stat.GetDefault(), stat + "-base",
+                        stat));
             }
 
             foreach (var stat in characterStats.stats)
@@ -72,25 +90,25 @@ namespace Client.Stats
         {
             RemoveModifier(modifierId);
         }
-        
+
         [Rpc(SendTo.Owner)]
         public void AddHealthRpc(float health)
         {
             SetHealth(GetHealth() + health);
         }
-        
+
         [Rpc(SendTo.Owner)]
         public void AddResourceRpc(float resource)
         {
             SetResource(GetResource() + resource);
         }
-        
+
         [Rpc(SendTo.Owner)]
         public void SetHealthRpc(float health)
         {
             SetHealth(health);
         }
-        
+
         [Rpc(SendTo.Owner)]
         public void SetResourceRpc(float resource)
         {
@@ -99,49 +117,128 @@ namespace Client.Stats
 
         public void SetHealth(float newHealth)
         {
-            var baseHp = GetModifier("base-Hp");
-            var oldHealth = baseHp != null ? baseHp.Value : 0;
-            if (baseHp != null)
+            var valueModifiers = modifiers.Value.modifiers;
+
+            StatModifier m = null;
+            for (int i = 0; i < valueModifiers.Length; i++)
             {
-                baseHp.Value = newHealth;
-                OnHealthChanged?.Invoke(oldHealth, newHealth);
+                var valueModifier = valueModifiers[i];
+                if (valueModifier.Identifier == "Hp-base")
+                {
+                    m = valueModifier;
+                }
             }
+
+            if (m == null) return;
+
+            m.Value = newHealth;
+
+            modifiers.Value = new ModifierSet
+            {
+                clientId = OwnerClientId,
+                modifiers = valueModifiers
+            };
+
+            var newModifier = new StatModifier(m);
+            newModifier.Identifier = "dummy-hp";
+            AddModifier(newModifier);
+            RemoveModifier("dummy-hp");
         }
-        
+
+        private void RemoveModifier(StatModifier toDelete)
+        {
+            var valueModifiers = modifiers.Value.modifiers;
+            var newModifiers = new List<StatModifier>();
+            ulong ownerId = 1;
+            foreach (var modifier in valueModifiers)
+            {
+                if (ownerId == 1)
+                {
+                    ownerId = modifier.OwnerId;
+                }
+
+                if (modifier != toDelete)
+                {
+                    newModifiers.Add(modifier);
+                }
+            }
+
+            modifiers.Value = new ModifierSet
+            {
+                clientId = ownerId,
+                modifiers = newModifiers.ToArray()
+            };
+        }
+
         public float GetHealth()
         {
-            var baseHp = GetModifier("base-Hp");
-            return baseHp != null ? baseHp.Value : 0;
+            var baseHp = GetModifier("Hp-base");
+            //Debug.Log(baseHp);
+            return baseHp?.Value ?? 0;
         }
-        
+
         public void SetResource(float newResource)
         {
-            var baseResource = GetModifier("base-Resource");
-            var oldResource = baseResource != null ? baseResource.Value : 0;
-            if (baseResource != null)
+            var valueModifiers = modifiers.Value.modifiers;
+            foreach (var modifier in valueModifiers)
             {
-                baseResource.Value = newResource;
-                OnResourceChanged?.Invoke(oldResource, newResource);
+                if (modifier.Identifier == "Resource-base")
+                {
+                    modifier.Value = newResource;
+                }
             }
+
+            modifiers.Value = new ModifierSet
+            {
+                clientId = OwnerClientId,
+                modifiers = valueModifiers
+            };
+
+            var newModifier = new StatModifier(OwnerClientId, ModifierType.BaseAdditive, 0, "dummy-resource",
+                Stat.Resource);
+            AddModifier(newModifier);
+            RemoveModifier("dummy-resource");
         }
-        
+
         public float GetResource()
         {
-            var baseResource = GetModifier("base-Resource");
-            return baseResource != null ? baseResource.Value : 0;
+            var baseResource = GetModifier("Resource-base");
+            return baseResource?.Value ?? 0;
         }
-        
+
         public void UpdateHealth(ModifierSet previous, ModifierSet current)
         {
             var previousHp = GetAggregatedValue(Stat.MaxHp, previous);
             var currentHp = GetAggregatedValue(Stat.MaxHp, current);
             if (!Mathf.Approximately(previousHp, currentHp))
             {
-                var percentage = currentHp / previousHp;
-                SetHealth(GetHealth() * percentage);
+                if (previousHp == 0)
+                {
+                    SetHealth(currentHp);
+                }
+                else
+                {
+                    var percentage = currentHp / previousHp;
+                    SetHealth(GetHealth() * percentage);
+                }
+            }
+
+            var previousResource = GetAggregatedValue(Stat.MaxResource, previous);
+            var currentResource = GetAggregatedValue(Stat.MaxResource, current);
+            if (!Mathf.Approximately(previousResource, currentResource))
+            {
+                if (previousResource == 0)
+                {
+                    SetResource(currentResource);
+                }
+                else
+                {
+                    var percentage = currentResource / previousResource;
+                    SetResource(GetResource() * percentage);
+                }
             }
         }
-        
+
         public StatModifier GetModifier(string modifierId)
         {
             foreach (var modifier in modifiers.Value.modifiers)

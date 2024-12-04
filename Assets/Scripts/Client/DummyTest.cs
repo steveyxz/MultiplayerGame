@@ -26,15 +26,26 @@ namespace Client
                 return;
             }
 
-            // if (Input.GetKeyDown(KeyCode.U))
-            // {
-            //     _clientStats.SetBaseValues(Character.TestSquare);
-            // }
-            // if (Input.GetKeyDown(KeyCode.I))
-            // {
-            //     _clientStats.AddModifier(new StatModifier(OwnerClientId, ModifierType.BaseAdditive, 10, "test" + index, Stat.Speed));
-            //     index++;
-            // }
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                _clientStats.SetBaseValues(Character.TestSquare);
+            }
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                _clientStats.AddHealthRpc(-10);
+            }
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                _clientStats.AddResourceRpc(-10);
+            }
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                _clientStats.AddHealthRpc(10);
+            }
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                _clientStats.AddResourceRpc(10);
+            }
             // if (Input.GetKeyDown(KeyCode.O))
             // {
             //     _clientStats.RemoveModifier("test" + (index - 1));

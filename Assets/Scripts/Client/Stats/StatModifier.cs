@@ -23,6 +23,10 @@ namespace Client.Stats
         public float TimeRemaining;
         public float DecayRate;
         
+        public StatModifier()
+        {
+        }
+        
         public StatModifier(ulong ownerId, ModifierType modifierType, float value, string identifier, Stat type, float duration = float.NegativeInfinity, float decayRate = 0)
         {
             OwnerId = ownerId;
@@ -35,8 +39,16 @@ namespace Client.Stats
             DecayRate = decayRate;
         }
 
-        public StatModifier()
+        public StatModifier(StatModifier previous)
         {
+            OwnerId = previous.OwnerId;
+            ModifierType = previous.ModifierType;
+            Value = previous.Value;
+            Identifier = previous.Identifier;
+            Type = previous.Type;
+            Duration = previous.Duration;
+            TimeRemaining = previous.TimeRemaining;
+            DecayRate = previous.DecayRate;
         }
 
         public void UpdateState(ClientStatHandler handler, float delta)
