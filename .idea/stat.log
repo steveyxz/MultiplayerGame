@@ -1030,3 +1030,9 @@
 {"ts":1733289650588,"action":"FILE_CLOSED","file":"/Assets/Scripts/Client/Stats/ClientStatHandler.cs","tags":{"FILE_LINE_OF_CODE":"200"}}
 {"ts":1733289670076,"action":"FILE_OPENED","file":"/Assets/Scripts/Client/Stats/ClientStatHandler.cs","tags":{"FILE_LINE_OF_CODE":"200"}}
 {"ts":1733290100775,"action":"IDE_DEACTIVATED"}
+{"ts":1733290260989,"action":"IDE_ACTIVATED"}
+{"ts":1733290261819,"action":"PROJECT_CLOSED","tags":{"PROJECT_NAME":"MultiplayerGame"}}
+{"ts":1733306922421,"action":"IDE_DEACTIVATED"}
+{"ts":1733306925038,"action":"PROJECT_OPENED","tags":{"PROJECT_NAME":"MultiplayerGame"}}
+{"ts":1733306984056,"action":"IDE_ACTIVATED"}
+{"ts":1733306984718,"action":"IDE_DEACTIVATED"}
