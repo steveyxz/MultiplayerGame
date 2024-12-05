@@ -49,6 +49,13 @@ namespace Global
         }
     }
 
+    public enum DamageType
+    {
+        PercentageMax,
+        PercentageCurrent,
+        Fixed
+    }
+
     /**
      * Represents one damaging hit
      * Percentage is true if the damage is a percentage of the target's health (value will be 0-1)
@@ -57,7 +64,7 @@ namespace Global
     [Serializable]
     public struct DamageEntry
     {
-        public bool percentage;
+        public DamageType type;
         public float value;
     }
 
@@ -76,12 +83,23 @@ namespace Global
     }
 
     [Serializable]
+    public struct AbilityMap
+    {
+        public string basic;
+        public string qAbility;
+        public string eAbility;
+        public string rAbility;
+        public string dashAbility;
+    }
+
+    [Serializable]
     public struct CharacterStats
     {
         public string id;
         public Character character;
         public StatValue[] stats;
         public IndexedDamageInstance[] damageValues;
+        public AbilityMap abilities;
     }
     
     public struct ModifierSet : INetworkSerializable, IEquatable<ModifierSet>

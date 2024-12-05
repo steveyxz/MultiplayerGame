@@ -1580,6 +1580,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1928705935}
   - component: {fileID: 1928705936}
+  - component: {fileID: 1928705938}
+  - component: {fileID: 1928705937}
   m_Layer: 0
   m_Name: Global
   m_TagString: Untagged
@@ -1625,11 +1627,55 @@ MonoBehaviour:
     damageValues:
     - id: main-attack
       damageInstance:
-      - percentage: 1
+      - type: 0
         value: 0.05
-      - percentage: 0
+      - type: 2
         value: 10
+    abilities:
+      basic: 
+      qAbility: 
+      eAbility: 
+      rAbility: 
+      dashAbility: 
   sharedPrefabs: []
+--- !u!114 &1928705937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928705934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1543954360
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &1928705938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928705934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eee012b89f04168883a800679c8ca71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1952734010
 GameObject:
   m_ObjectHideFlags: 0
