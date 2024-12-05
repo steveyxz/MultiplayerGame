@@ -1,17 +1,19 @@
-﻿using Global;
+﻿using System;
+using System.Collections.Generic;
+using Global;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace Client.Stats
 {
-    
     public enum ModifierType
     {
         BaseAdditive,
         BaseMultiplicative,
-        FinalAdditive, 
+        FinalAdditive,
         FinalMultiplicative
     }
-    
+
     public class StatModifier : INetworkSerializable
     {
         public ulong OwnerId;
@@ -22,12 +24,13 @@ namespace Client.Stats
         public float Duration;
         public float TimeRemaining;
         public float DecayRate;
-        
+
         public StatModifier()
         {
         }
-        
-        public StatModifier(ulong ownerId, ModifierType modifierType, float value, string identifier, Stat type, float duration = float.NegativeInfinity, float decayRate = 0)
+
+        public StatModifier(ulong ownerId, ModifierType modifierType, float value, string identifier, Stat type,
+            float duration = float.NegativeInfinity, float decayRate = 0)
         {
             OwnerId = ownerId;
             ModifierType = modifierType;
@@ -58,6 +61,7 @@ namespace Client.Stats
             {
                 return;
             }
+
             TimeRemaining -= delta;
             if (TimeRemaining <= 0)
             {
@@ -75,6 +79,31 @@ namespace Client.Stats
             serializer.SerializeValue(ref Duration);
             serializer.SerializeValue(ref TimeRemaining);
             serializer.SerializeValue(ref DecayRate);
+        }
+
+
+        public override bool Equals(object obj)
+        {
+            return obj is StatModifier modifier &&
+                   OwnerId == modifier.OwnerId &&
+                   ModifierType == modifier.ModifierType &&
+                   Mathf.Approximately(Value, modifier.Value) &&
+                   Identifier == modifier.Identifier &&
+                   Type == modifier.Type &&
+                   Mathf.Approximately(Duration, modifier.Duration) &&
+                   Mathf.Approximately(TimeRemaining, modifier.TimeRemaining) &&
+                   Mathf.Approximately(DecayRate, modifier.DecayRate);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(OwnerId, (int)ModifierType, Value, Identifier, (int)Type, Duration, TimeRemaining, DecayRate);
+        }
+
+        public int GetHashCode(StatModifier obj)
+        {
+            return HashCode.Combine(obj.OwnerId, (int)obj.ModifierType, obj.Value, obj.Identifier, (int)obj.Type,
+                obj.Duration, obj.TimeRemaining, obj.DecayRate);
         }
     }
 }

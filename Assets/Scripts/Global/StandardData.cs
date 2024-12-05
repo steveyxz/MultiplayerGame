@@ -84,11 +84,11 @@ namespace Global
         public IndexedDamageInstance[] damageValues;
     }
     
-    public struct ModifierSet : INetworkSerializable
+    public struct ModifierSet : INetworkSerializable, IEquatable<ModifierSet>
     {
         public ulong clientId;
         public StatModifier[] modifiers;
-            
+        
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref clientId);
@@ -113,6 +113,29 @@ namespace Global
                 }
             }
             
+        }
+
+        public bool Equals(ModifierSet other)
+        {
+            if (clientId != other.clientId)
+            {
+                return false;
+            }
+
+            if (modifiers.Length != other.modifiers.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < modifiers.Length; i++)
+            {
+                if (!modifiers[i].Equals(other.modifiers[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 

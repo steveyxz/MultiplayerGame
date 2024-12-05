@@ -40,8 +40,6 @@ namespace Client.Stats
         {
             var previousActualHp = GetAggregatedValue(Stat.Hp, previousV);
             var currentActualHp = GetAggregatedValue(Stat.Hp, newV);
-            Debug.Log("previousActualHp: " + previousActualHp);
-            Debug.Log("currentActualHp: " + currentActualHp);
             if (!Mathf.Approximately(previousActualHp, currentActualHp))
             {
                 OnHealthChanged?.Invoke(previousActualHp, currentActualHp);
@@ -118,6 +116,7 @@ namespace Client.Stats
         public void SetHealth(float newHealth)
         {
             var valueModifiers = modifiers.Value.modifiers;
+            var newModifiers = new StatModifier[valueModifiers.Length];
 
             StatModifier m = null;
             for (int i = 0; i < valueModifiers.Length; i++)
@@ -125,24 +124,29 @@ namespace Client.Stats
                 var valueModifier = valueModifiers[i];
                 if (valueModifier.Identifier == "Hp-base")
                 {
-                    m = valueModifier;
+                    m = new StatModifier(valueModifier)
+                    {
+                        Value = newHealth
+                    };
+                    newModifiers[i] = m;
+                } else {
+                    newModifiers[i] = valueModifier;
                 }
             }
 
             if (m == null) return;
-
-            m.Value = newHealth;
-
+            
             modifiers.Value = new ModifierSet
             {
                 clientId = OwnerClientId,
-                modifiers = valueModifiers
+                modifiers = newModifiers
             };
+            
 
-            var newModifier = new StatModifier(m);
-            newModifier.Identifier = "dummy-hp";
-            AddModifier(newModifier);
-            RemoveModifier("dummy-hp");
+            // var newModifier = new StatModifier(m);
+            // newModifier.Identifier = "dummy-hp";
+            // AddModifier(newModifier);
+            // RemoveModifier("dummy-hp");
         }
 
         private void RemoveModifier(StatModifier toDelete)
@@ -180,24 +184,31 @@ namespace Client.Stats
         public void SetResource(float newResource)
         {
             var valueModifiers = modifiers.Value.modifiers;
-            foreach (var modifier in valueModifiers)
+            var newModifiers = new StatModifier[valueModifiers.Length];
+
+            StatModifier m = null;
+            for (int i = 0; i < valueModifiers.Length; i++)
             {
-                if (modifier.Identifier == "Resource-base")
+                var valueModifier = valueModifiers[i];
+                if (valueModifier.Identifier == "Resource-base")
                 {
-                    modifier.Value = newResource;
+                    m = new StatModifier(valueModifier)
+                    {
+                        Value = newResource
+                    };
+                    newModifiers[i] = m;
+                } else {
+                    newModifiers[i] = valueModifier;
                 }
             }
 
+            if (m == null) return;
+            
             modifiers.Value = new ModifierSet
             {
                 clientId = OwnerClientId,
-                modifiers = valueModifiers
+                modifiers = newModifiers
             };
-
-            var newModifier = new StatModifier(OwnerClientId, ModifierType.BaseAdditive, 0, "dummy-resource",
-                Stat.Resource);
-            AddModifier(newModifier);
-            RemoveModifier("dummy-resource");
         }
 
         public float GetResource()

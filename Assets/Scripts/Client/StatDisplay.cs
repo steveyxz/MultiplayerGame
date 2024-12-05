@@ -29,8 +29,6 @@ namespace Client
                 return;
             }
             _resourceSlider.value = newvalue / maxResource;
-            Debug.Log("Max Resource: " + maxResource);
-            Debug.Log("Resource amount: " + newvalue);
         }
 
         private void OnHealthChanged(float oldvalue, float newvalue)
@@ -41,8 +39,6 @@ namespace Client
                 return;
             }
             _healthSlider.value = newvalue / maxHealth;
-            Debug.Log("Max Health: " + maxHealth);
-            Debug.Log("Health amount: " + newvalue);
         }
     }
 }
