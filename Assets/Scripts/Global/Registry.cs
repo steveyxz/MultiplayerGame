@@ -7,9 +7,8 @@ namespace Global
 {
     public class Registry : MonoBehaviour
     {
-        
-        public CharacterStats[] characterStats;
-        public IndexedPrefab[] sharedPrefabs;
+
+        public RegistryData data;
         
         Dictionary<Character, CharacterStats> indexedCharacterStats = new();
         Dictionary<string, GameObject> indexedPrefabs = new();
@@ -18,12 +17,12 @@ namespace Global
         {
             DontDestroyOnLoad(gameObject);
             Instance = this;
-            foreach (var characterStat in characterStats)
+            foreach (var characterStat in data.characterStats)
             {
                 indexedCharacterStats.Add(characterStat.character, characterStat);
             }
 
-            foreach (var sharedPrefab in sharedPrefabs)
+            foreach (var sharedPrefab in data.sharedPrefabs)
             {
                 indexedPrefabs.Add(sharedPrefab.id, sharedPrefab.prefab);
             }
@@ -54,20 +53,6 @@ namespace Global
 
             return stat.GetDefault();
 
-        }
-        
-        public static DamageEntry[] GetDamageInstance(Character character, string id)
-        {
-            var damageInstances = GetCharacterStats(character).damageValues;
-            foreach (var damageInstance in damageInstances)
-            {
-                if (damageInstance.id == id)
-                {
-                    return damageInstance.damageInstance;
-                }
-            }
-
-            return Array.Empty<DamageEntry>();
         }
     }
 }

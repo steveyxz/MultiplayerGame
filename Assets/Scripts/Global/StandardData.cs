@@ -83,6 +83,13 @@ namespace Global
     }
 
     [Serializable]
+    public struct IndexedValue
+    {
+        public string id;
+        public float value;
+    }
+
+    [Serializable]
     public struct AbilityMap
     {
         public string basic;
@@ -98,8 +105,15 @@ namespace Global
         public string id;
         public Character character;
         public StatValue[] stats;
-        public IndexedDamageInstance[] damageValues;
         public AbilityMap abilities;
+    }
+
+    [Serializable]
+    public struct AbilityInfo
+    {
+        public string identifier;
+        public IndexedDamageInstance[] damageValues;
+        public IndexedValue[] magicValues;
     }
     
     public struct ModifierSet : INetworkSerializable, IEquatable<ModifierSet>

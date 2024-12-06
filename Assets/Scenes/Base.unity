@@ -798,7 +798,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000ef458bc6
+  m_ApplyToSortingLayers: 00000000ef458bc62d547997
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -1580,8 +1580,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1928705935}
   - component: {fileID: 1928705936}
-  - component: {fileID: 1928705938}
   - component: {fileID: 1928705937}
+  - component: {fileID: 1928705938}
+  - component: {fileID: 1928705939}
   m_Layer: 0
   m_Name: Global
   m_TagString: Untagged
@@ -1616,28 +1617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7077498eaba494a8244ccf212fb4354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterStats:
-  - id: test-square
-    character: 0
-    stats:
-    - stat: 0
-      value: 50
-    - stat: 7
-      value: 1.1
-    damageValues:
-    - id: main-attack
-      damageInstance:
-      - type: 0
-        value: 0.05
-      - type: 2
-        value: 10
-    abilities:
-      basic: 
-      qAbility: 
-      eAbility: 
-      rAbility: 
-      dashAbility: 
-  sharedPrefabs: []
+  data: {fileID: 11400000, guid: 06069f1df028c4047b8d3c2248861b9b, type: 2}
 --- !u!114 &1928705937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1655,7 +1635,7 @@ MonoBehaviour:
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
+  SynchronizeTransform: 0
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 1
   SpawnWithObservers: 1
@@ -1676,6 +1656,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  data: {fileID: 11400000, guid: 0dc0a6dac7ac77f418da5b1149afd62d, type: 2}
+--- !u!114 &1928705939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928705934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97f3480782b4fc1b19de6a7689802f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  PooledPrefabsList:
+  - Prefab: {fileID: 6551657451184947508, guid: 2e531eaf261c4d846b4daa1416a76026, type: 3}
+    PrewarmCount: 1000
 --- !u!1 &1952734010
 GameObject:
   m_ObjectHideFlags: 0
